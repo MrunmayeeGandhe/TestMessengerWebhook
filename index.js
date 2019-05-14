@@ -96,7 +96,7 @@ function handleMessage(sender_psid, received_message) {
   }  
   
   // Sends the response message
-  callSendAPI(sender_psid, response);
+  return callSendAPI(sender_psid, response);
 }
 
 // Handles messaging_postbacks events
@@ -106,7 +106,7 @@ function handlePostback(sender_psid, received_postback) {
 
 // Sends response messages via the Send API
 function callSendAPI(sender_psid, response) {
-  console.log("callSendAPI", sender_psid, received_message);
+  console.log("callSendAPI", sender_psid, response);
   // Construct the message body
   let request_body = {
     "recipient": {
@@ -122,7 +122,8 @@ function callSendAPI(sender_psid, response) {
     "json": request_body
   }, (err, res, body) => {
     if (!err) {
-      console.log('message sent!')
+      console.log('message sent!');
+      return res.body;
     } else {
       console.error("Unable to send message:" + err);
     }
