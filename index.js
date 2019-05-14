@@ -4,11 +4,10 @@
 const
   express = require('express'),
   bodyParser = require('body-parser'),
-  request = require('request'),  
+  request = require('request'),
+  
   app = express().use(bodyParser.json()); // creates express http server
-
-
-const PAGE_ACCESS_TOKEN = EAAgfCh3cc9YBAFD8bzP14WP1I9r9N8djbsuFZBJk8Cdb4HFZCr5KRtZBGXcwWWDiuwnZBBw85qtWonivm70ZCGeZCJEAhrxHZB6dckGZAZCMfcI2ssDTQe4ut2vS3qtdD88x6CgXxIq5KxJ1kV9gkhz0eUDJThOTMUjgmFlYfha6ZCJQZDZD;
+const PAGE_ACCESS_TOKEN = "EAAgfCh3cc9YBAFD8bzP14WP1I9r9N8djbsuFZBJk8Cdb4HFZCr5KRtZBGXcwWWDiuwnZBBw85qtWonivm70ZCGeZCJEAhrxHZB6dckGZAZCMfcI2ssDTQe4ut2vS3qtdD88x6CgXxIq5KxJ1kV9gkhz0eUDJThOTMUjgmFlYfha6ZCJQZDZD";
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
 
