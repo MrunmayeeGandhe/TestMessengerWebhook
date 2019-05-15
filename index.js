@@ -33,7 +33,7 @@ app.post('/webhook', (req, res) => {
         // Check if the event is a message or postback and
         // pass the event to the appropriate handler function
         if (webhook_event.message) {
-          handleMessage(sender_psid, webhook_event.message);        
+          handleMessage(sender_psid, webhook_event.message, res);        
         } else if (webhook_event.postback) {
           handlePostback(sender_psid, webhook_event.postback);
         }
@@ -41,7 +41,7 @@ app.post('/webhook', (req, res) => {
       });
   
       // Returns a '200 OK' response to all requests
-      res.status(200).send('EVENT_RECEIVED');
+      //res.status(200).send('EVENT_RECEIVED');
     } else {
       // Returns a '404 Not Found' if event is not from a page subscription
       res.sendStatus(404);
@@ -81,7 +81,7 @@ app.get('/webhook', (req, res) => {
 
 
 // Handles messages events
-function handleMessage(sender_psid, received_message) {
+function handleMessage(sender_psid, received_message, res) {
   console.log("handleMessage", sender_psid, received_message);
 
   let response;
@@ -96,7 +96,10 @@ function handleMessage(sender_psid, received_message) {
   }  
   
   // Sends the response message
-  return callSendAPI(sender_psid, response);
+  callSendAPI(sender_psid, response).then((data)=>{
+    console.log(data);
+    res.status(200).send(data);
+  });
 }
 
 // Handles messaging_postbacks events
@@ -115,17 +118,21 @@ function callSendAPI(sender_psid, response) {
     "message": response
   }
   // Send the HTTP request to the Messenger Platform
-  request({
-    "uri": "https://graph.facebook.com/v2.6/me/messages",
-    "qs": { "access_token": PAGE_ACCESS_TOKEN },
-    "method": "POST",
-    "json": request_body
-  }, (err, res, body) => {
-    if (!err) {
-      console.log('message sent!');
-      console.log(res);
-    } else {
-      console.error("Unable to send message:" + err);
-    }
-  }); 
+  return new Promise(function(resolve, reject) {
+    // Do async job
+    request({
+      "uri": "https://graph.facebook.com/v3.2/me/messages",
+      "qs": { "access_token": PAGE_ACCESS_TOKEN },
+      "method": "POST",
+      "json": request_body
+    }, (err, res, body) => {
+      if (!err) {
+        console.log('message sent!');
+        resolve(JSON.parse(body));
+      } else {
+        console.error("Unable to send message:" + err);
+        reject(err);
+      }
+    });
+   });  
 }
